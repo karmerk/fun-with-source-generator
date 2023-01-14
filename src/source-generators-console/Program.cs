@@ -1,5 +1,5 @@
 ﻿using System.Reflection;
-using System.Runtime.CompilerServices;
+
 
 partial class Program
 {
@@ -12,10 +12,8 @@ partial class Program
         var instance = Container.Instance;
 
         var container = instance.GetService(typeof(IServiceProvider)); // returns null right now.. should return self
-        var myObject = instance.GetService(typeof(MyObject));
-
-        
-        
+        var myObject = instance.GetService(typeof(IMyObject));
+                
 
         var assembly = Assembly.GetExecutingAssembly();
         var types = assembly.GetTypes().Where(x => x.GetInterfaces().Contains(typeof(ISomeType)));
@@ -65,6 +63,7 @@ public partial class Container
 public class ServiceAttribute<T> : Attribute
 {
     public Type Type { get; } = typeof(T);
+    public ServiceLifetime Lifetime { get; set; } = ServiceLifetime.Transient;
 }
 
 public enum ServiceLifetime
@@ -76,7 +75,7 @@ public enum ServiceLifetime
 
 public interface IMyObject { }
 
-[ServiceAttribute<MyObject>] // Does not work with interface :(
+[ServiceAttribute<IMyObject>(Lifetime = ServiceLifetime.Singleton)]
 public class MyObject : IMyObject
 {
     private readonly MyObjectDependency _dependency;
@@ -85,6 +84,7 @@ public class MyObject : IMyObject
         _dependency = dependency;
     }
 }
+
 
 [ServiceAttribute<MyObjectDependency>]
 public class MyObjectDependency
