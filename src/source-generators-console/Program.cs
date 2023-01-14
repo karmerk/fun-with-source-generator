@@ -11,7 +11,7 @@ partial class Program
 
         var instance = Container.Instance;
 
-        var container = instance.GetService(typeof(IServiceProvider)); // returns null right now.. should return self
+        var container = instance.GetService(typeof(IServiceProvider));
         var myObject = instance.GetService(typeof(IMyObject));
                 
 
